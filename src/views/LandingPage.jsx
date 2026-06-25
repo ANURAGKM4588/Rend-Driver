@@ -55,6 +55,18 @@ export const LandingPage = () => {
           }
         }
       );
+
+      // Scroll-driven car animation along the route
+      gsap.to('.hero-car', {
+        offsetDistance: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
     });
 
     return () => ctx.revert(); // clean up GSAP animations on unmount
