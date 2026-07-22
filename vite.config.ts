@@ -7,6 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    base: process.env.NODE_ENV === "production" ? "/Rend-Driver/" : "/",
+  },
   tanstackStart: {
     server: { entry: "server" },
   },
