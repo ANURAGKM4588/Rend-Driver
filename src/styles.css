@@ -200,6 +200,7 @@
     box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 30px 60px -30px color-mix(in oklab, var(--ink) 35%, transparent);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.35);
   }
 }
+
