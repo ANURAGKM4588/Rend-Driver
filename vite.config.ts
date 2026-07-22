@@ -5,5 +5,5 @@ import { tanstackBuildConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
-  base: process.env.NODE_ENV === "production" ? "/Rend-Driver/" : "/",
+  base: "./",
 });
