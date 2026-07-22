@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { ScrollCinematic } from "@/components/ScrollCinematic";
 import bannerDriver from "@/assets/banner-driver.jpg";
+import { DriverTermsModal } from "@/components/DriverTermsModal";
+import { DriverApplicationModal } from "@/components/DriverApplicationModal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,26 +30,48 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isApplyOpen, setIsApplyOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+      <Nav onOpenApply={() => setIsApplyOpen(true)} />
       <Hero />
       <Ticker />
       <Manifesto />
       <How />
       <Standards />
+      <Insurance />
       <ForWho />
       <Packages />
       <Cities />
       <Testimonials />
       <FAQ />
       <AppCTA />
-      <Footer />
+      <DriverCareers
+        onOpenTerms={() => setIsTermsOpen(true)}
+        onOpenApply={() => setIsApplyOpen(true)}
+      />
+      <Footer
+        onOpenTerms={() => setIsTermsOpen(true)}
+        onOpenCareers={() => setIsApplyOpen(true)}
+      />
+
+      {/* Driver Job Application & Qualification Modals */}
+      <DriverTermsModal
+        isOpen={isTermsOpen}
+        onClose={() => setIsTermsOpen(false)}
+        onOpenApply={() => setIsApplyOpen(true)}
+      />
+      <DriverApplicationModal
+        isOpen={isApplyOpen}
+        onClose={() => setIsApplyOpen(false)}
+      />
     </div>
   );
 }
 
-function Nav() {
+function Nav({ onOpenApply }: { onOpenApply: () => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 lg:px-10">
@@ -59,20 +83,30 @@ function Nav() {
             PILOTED
           </span>
         </a>
-        <nav className="hidden gap-8 text-sm text-muted-foreground md:flex">
+        <nav className="hidden gap-7 text-xs font-semibold uppercase tracking-wider text-muted-foreground lg:flex">
           <a href="#story" className="link-underline hover:text-foreground transition-colors">Story</a>
           <a href="#how" className="link-underline hover:text-foreground transition-colors">How it works</a>
           <a href="#standards" className="link-underline hover:text-foreground transition-colors">Standards</a>
+          <a href="#insurance" className="link-underline hover:text-foreground transition-colors">Insurance</a>
           <a href="#packages" className="link-underline hover:text-foreground transition-colors">Packages</a>
+          <a href="#careers" className="link-underline hover:text-foreground transition-colors">Driver Jobs</a>
           <a href="#faq" className="link-underline hover:text-foreground transition-colors">FAQ</a>
         </nav>
-        <a
-          href="#app"
-          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-4 py-2 text-xs font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5"
-        >
-          Get the app
-          <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
-        </a>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onOpenApply}
+            className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider hover:border-taxi hover:text-taxi-deep transition-colors"
+          >
+            Apply as Driver
+          </button>
+          <a
+            href="#app"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-4 py-2 text-xs font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5"
+          >
+            Get the app
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        </div>
       </div>
     </header>
   );
@@ -497,6 +531,78 @@ function Standards() {
   );
 }
 
+function Insurance() {
+  const coverageItems = [
+    {
+      title: "Full Comprehensive & Collision",
+      tag: "$1M+ Commercial Policy",
+      desc: "Every trip is backed by master commercial insurance covering your personal vehicle against physical damage, theft, or collision while our driver is at the wheel.",
+    },
+    {
+      title: "Third-Party & Public Liability",
+      tag: "Complete Legal Protection",
+      desc: "Full coverage for third-party property damage and bodily injury liability claims, protecting vehicle owners against external claims.",
+    },
+    {
+      title: "Passenger Medical Payments",
+      tag: "Occupant Protection",
+      desc: "Medical expense coverage for all passengers, family members, and occupants inside your car during active PILOTED dispatches.",
+    },
+    {
+      title: "Zero-Deductible Guarantee",
+      tag: "100% Owner Safeguard",
+      desc: "Vehicle owners pay $0 out-of-pocket deductible in the event of an approved claim during an active booking.",
+    },
+  ];
+
+  return (
+    <section id="insurance" className="border-b border-border bg-background">
+      <div className="mx-auto max-w-[1400px] px-6 py-20 lg:px-10 lg:py-28">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+          {/* Left Column: Heading */}
+          <div className="lg:col-span-5 text-left">
+            <Reveal variant="up" className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
+              <span className="h-px w-6 bg-ink/40" />
+              Commercial Protection
+            </Reveal>
+            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-left">
+              Comprehensive insurance. Every single mile<span className="text-taxi-deep">.</span>
+            </Reveal>
+            <Reveal as="p" variant="up" delay={220} className="mt-6 text-muted-foreground text-left text-base leading-relaxed max-w-md">
+              You keep your car. We cover the risk. Every trip booked through PILOTED includes complete commercial insurance protection while our driver is at the wheel.
+            </Reveal>
+            <Reveal variant="up" delay={300} className="mt-8 inline-flex items-center gap-3 rounded-2xl border border-taxi/40 bg-taxi/10 p-4 text-xs font-semibold text-foreground">
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-taxi font-bold">
+                ✓
+              </span>
+              <span>24/7 Incident Hotline & On-Scene Claims Support</span>
+            </Reveal>
+          </div>
+
+          {/* Right Column: 2x2 Coverage Grid Cards */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+            {coverageItems.map((c, i) => (
+              <Reveal key={c.title} variant="up" delay={i * 100}>
+                <div className="group rounded-3xl border border-border bg-card p-8 transition-all hover:border-taxi hover:shadow-lg">
+                  <span className="inline-block rounded-full bg-taxi/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-taxi-deep mb-4">
+                    {c.tag}
+                  </span>
+                  <h3 className="font-display text-xl font-bold tracking-tight text-ink mb-2">
+                    {c.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {c.desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ForWho() {
   const cards = [
     { n: "01", tag: "Busy parents", title: "The school run,\nwithout the school run.", note: "Morning drop-offs. Ballet pick-ups. Your car in your driveway by dinner.", span: "md:col-span-4 md:row-span-2", tone: "ink" },
@@ -744,6 +850,82 @@ function Cities() {
   );
 }
 
+function DriverCareers({
+  onOpenTerms,
+  onOpenApply,
+}: {
+  onOpenTerms: () => void;
+  onOpenApply: () => void;
+}) {
+  const requirements = [
+    { title: "21+ Years Old & Commercial License", desc: "Valid Indian LMV / Transport license with 3+ years active driving experience." },
+    { title: "Clean Driving Record", desc: "Zero major violations, suspensions, or DUI records in the last 5 years." },
+    { title: "Police Clearance Verified", desc: "PCC background clearance and identity verification mandatory." },
+    { title: "Uniform & Professional Code", desc: "Ironed uniform standards, client confidentiality, and defensive driving." },
+  ];
+
+  return (
+    <section id="careers" className="border-b border-border bg-ink text-bone">
+      <div className="mx-auto max-w-[1400px] px-6 py-20 lg:px-10 lg:py-28 text-left">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+          {/* Left Column: Heading & CTA Buttons */}
+          <div className="lg:col-span-5 text-left">
+            <Reveal variant="up" className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-taxi">
+              — Join the Network
+            </Reveal>
+            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-bone text-left">
+              Drive with PILOTED<span className="text-taxi">.</span>
+            </Reveal>
+            <Reveal as="p" variant="up" delay={220} className="mt-6 text-bone/70 text-left text-base leading-relaxed max-w-md">
+              Earn premium rates driving luxury sedans, SUVs, and personal vehicles. Flexible hours, verified clients, and weekly direct payouts.
+            </Reveal>
+
+            {/* Action Buttons */}
+            <Reveal variant="up" delay={300} className="mt-10 flex flex-wrap items-center gap-4 relative z-10">
+              <button
+                type="button"
+                onClick={onOpenApply}
+                className="group relative inline-flex items-center gap-3 rounded-full bg-taxi px-7 py-4 text-sm font-bold uppercase tracking-wider text-ink transition-transform hover:-translate-y-0.5 shadow-lg cursor-pointer"
+              >
+                Apply Now
+                <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+              </button>
+              <button
+                type="button"
+                onClick={onOpenTerms}
+                className="rounded-full border border-bone/30 px-6 py-4 text-sm font-semibold uppercase tracking-wider text-bone hover:border-taxi hover:text-taxi transition-colors cursor-pointer"
+              >
+                View More Details
+              </button>
+            </Reveal>
+          </div>
+
+          {/* Right Column: Qualifications Checklist */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+            {requirements.map((r, i) => (
+              <Reveal key={r.title} variant="up" delay={i * 100}>
+                <div className="rounded-3xl border border-bone/15 bg-bone/5 p-7">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-taxi text-ink font-bold text-xs">
+                      ✓
+                    </span>
+                    <h3 className="font-display text-base font-bold text-bone">
+                      {r.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs leading-relaxed text-bone/60 pl-10">
+                    {r.desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Testimonials() {
   const notes = [
     {
@@ -914,7 +1096,13 @@ function StoreButton({ store, sub }: { store: string; sub: string }) {
   );
 }
 
-function Footer() {
+function Footer({
+  onOpenTerms,
+  onOpenCareers,
+}: {
+  onOpenTerms: () => void;
+  onOpenCareers: () => void;
+}) {
   return (
     <footer className="border-t border-border bg-background text-foreground text-left">
       <div className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10 lg:py-20">
@@ -936,10 +1124,36 @@ function Footer() {
 
           {/* Nav Links Column 1 */}
           <div className="md:col-span-3 text-left">
-            <FooterCol
-              title="Company"
-              items={["Story", "Standards", "Careers", "Press"]}
-            />
+            <div className="flex flex-col items-start text-left">
+              <div className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground text-left">
+                Company & Driver Jobs
+              </div>
+              <ul className="mt-4 space-y-3 text-sm text-left">
+                <li className="text-left">
+                  <a href="#story" className="hover:text-taxi-deep transition-colors text-left">
+                    Story
+                  </a>
+                </li>
+                <li className="text-left">
+                  <a href="#standards" className="hover:text-taxi-deep transition-colors text-left">
+                    Standards
+                  </a>
+                </li>
+                <li className="text-left">
+                  <a href="#insurance" className="hover:text-taxi-deep transition-colors text-left">
+                    Insurance Coverage
+                  </a>
+                </li>
+                <li className="text-left">
+                  <button
+                    onClick={onOpenCareers}
+                    className="hover:text-taxi-deep transition-colors text-left font-semibold text-foreground"
+                  >
+                    Apply for Driver Job
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Nav Links Column 2 */}
@@ -957,9 +1171,12 @@ function Footer() {
             © {new Date().getFullYear()} PILOTED Inc. All rights reserved.
           </div>
           <div className="flex items-center gap-6 text-left">
-            <a href="#" className="hover:text-ink transition-colors">
-              Terms of Service
-            </a>
+            <button
+              onClick={onOpenTerms}
+              className="hover:text-ink transition-colors text-left font-medium"
+            >
+              Terms & Conditions
+            </button>
             <a href="#" className="hover:text-ink transition-colors">
               Privacy Policy
             </a>
