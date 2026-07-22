@@ -1,0 +1,205 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-bone: var(--bone);
+  --color-taxi: var(--taxi);
+  --color-taxi-deep: var(--taxi-deep);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Brand */
+  --ink: oklch(0.13 0 0);           /* near-black */
+  --bone: oklch(0.98 0.005 90);     /* warm off-white */
+  --taxi: oklch(0.88 0.19 96);      /* taxi yellow */
+  --taxi-deep: oklch(0.78 0.17 82); /* amber */
+
+  --background: var(--bone);
+  --foreground: var(--ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--taxi);
+  --secondary: oklch(0.95 0.01 90);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.94 0.01 90);
+  --muted-foreground: oklch(0.45 0.01 90);
+  --accent: var(--taxi);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.01 90);
+  --input: oklch(0.9 0.01 90);
+  --ring: var(--ink);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+}
+
+@utility checker-stripe {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--ink) 0 14px,
+    var(--taxi) 14px 28px
+  );
+}
+
+@utility marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- Hero car ---------- */
+@keyframes car-drive-in {
+  0%   { opacity: 0; transform: translateX(60%); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes car-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes road-sweep {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  60%  { transform: scaleX(1); transform-origin: left; }
+  61%  { transform-origin: right; }
+  100% { transform: scaleX(1); transform-origin: right; }
+}
+
+.car-hero {
+  animation:
+    car-drive-in 1.6s cubic-bezier(0.22, 1, 0.36, 1) both,
+    car-float 6s ease-in-out 1.6s infinite;
+}
+
+
+.road-line {
+  animation: road-sweep 2.2s cubic-bezier(0.77, 0, 0.175, 1) 0.4s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .car-hero, .road-line { animation: none !important; }
+}
+
+
+/* ---------- Reveal-on-scroll ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-reveal="down"]  { transform: translateY(-28px); }
+[data-reveal="left"]  { transform: translateX(28px); }
+[data-reveal="right"] { transform: translateX(-28px); }
+[data-reveal="fade"]  { transform: none; }
+[data-reveal="clip"] {
+  transform: none;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 1.1s cubic-bezier(0.77, 0, 0.175, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  .marquee { animation: none !important; }
+}
+
+/* ---------- Micro-interactions ---------- */
+@utility link-underline {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@utility tile-hover {
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 60px -30px color-mix(in oklab, var(--ink) 35%, transparent);
+  }
+}
