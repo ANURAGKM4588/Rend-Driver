@@ -97,10 +97,22 @@ function Index() {
 }
 
 function Nav({ onOpenApply }: { onOpenApply: () => void }) {
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (id === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 lg:px-10">
-        <a href="#" className="flex items-center gap-2">
+        <a href="#top" onClick={scrollTo("top")} className="flex items-center gap-2">
           <span className="grid h-7 w-7 place-items-center rounded-md bg-ink text-taxi font-display font-bold text-sm">
             P
           </span>
@@ -109,13 +121,13 @@ function Nav({ onOpenApply }: { onOpenApply: () => void }) {
           </span>
         </a>
         <nav className="hidden gap-7 text-xs font-semibold uppercase tracking-wider text-muted-foreground lg:flex">
-          <a href="#story" className="link-underline hover:text-foreground transition-colors">Story</a>
-          <a href="#how" className="link-underline hover:text-foreground transition-colors">How it works</a>
-          <a href="#standards" className="link-underline hover:text-foreground transition-colors">Standards</a>
-          <a href="#insurance" className="link-underline hover:text-foreground transition-colors">Insurance</a>
-          <a href="#packages" className="link-underline hover:text-foreground transition-colors">Packages</a>
-          <a href="#careers" className="link-underline hover:text-foreground transition-colors">Driver Jobs</a>
-          <a href="#faq" className="link-underline hover:text-foreground transition-colors">FAQ</a>
+          <a href="#story" onClick={scrollTo("story")} className="link-underline hover:text-foreground transition-colors">Story</a>
+          <a href="#how" onClick={scrollTo("how")} className="link-underline hover:text-foreground transition-colors">How it works</a>
+          <a href="#standards" onClick={scrollTo("standards")} className="link-underline hover:text-foreground transition-colors">Standards</a>
+          <a href="#insurance" onClick={scrollTo("insurance")} className="link-underline hover:text-foreground transition-colors">Insurance</a>
+          <a href="#packages" onClick={scrollTo("packages")} className="link-underline hover:text-foreground transition-colors">Packages</a>
+          <a href="#careers" onClick={scrollTo("careers")} className="link-underline hover:text-foreground transition-colors">Driver Jobs</a>
+          <a href="#faq" onClick={scrollTo("faq")} className="link-underline hover:text-foreground transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center gap-3">
           <button
