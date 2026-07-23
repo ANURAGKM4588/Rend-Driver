@@ -12,7 +12,18 @@ import { useEffect, type ReactNode } from "react";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
-  return <Outlet />;
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+      <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">404</h1>
+      <p className="mt-2 text-base text-muted-foreground">Page not found.</p>
+      <a
+        href="./"
+        className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+      >
+        Return to Home
+      </a>
+    </div>
+  );
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
