@@ -492,9 +492,21 @@ function Manifesto() {
 
 function How() {
   const steps = [
-    { n: "01", t: "Open the app", d: "Tell us where, when, and how long you need a driver. That's it." },
-    { n: "02", t: "We dispatch a driver", d: "A vetted PILOTED driver arrives at your door — uniformed, on time, ready." },
-    { n: "03", t: "You ride. We drive.", d: "Sit back. Answer emails. Sleep. Talk. It's still your car." },
+    {
+      n: "01",
+      t: "Open the app",
+      d: "Tell us where, when, and how long you need a driver. That's it.",
+    },
+    {
+      n: "02",
+      t: "We dispatch a driver",
+      d: "A vetted PILOTED driver arrives at your door — uniformed, on time, ready.",
+    },
+    {
+      n: "03",
+      t: "You ride. We drive.",
+      d: "Sit back. Answer emails. Sleep. Talk. It's still your car.",
+    },
   ];
   return (
     <section id="how" className="border-b border-border bg-ink text-bone">
@@ -514,23 +526,28 @@ function How() {
           </Reveal>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-px bg-bone/10 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
             <Reveal
               key={s.n}
               variant="up"
               delay={i * 160}
-              className="group flex flex-col items-center justify-between rounded-3xl bg-ink p-8 text-center transition-colors hover:bg-bone/[0.04] lg:p-10"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-bone/15 bg-bone/5 p-8 text-center transition-all duration-500 hover:-translate-y-1.5 hover:border-taxi/80 hover:bg-bone/10 hover:shadow-2xl lg:p-10"
             >
-              <div className="font-display text-6xl font-extrabold text-taxi transition-transform duration-500 group-hover:-translate-y-1 lg:text-7xl">
-                {s.n}
-              </div>
-              <div className="mt-16 text-center">
-                <h3 className="font-display text-2xl font-semibold text-bone">
+              <div className="flex flex-col items-center">
+                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-taxi/15 font-display text-2xl font-black text-taxi transition-transform duration-500 group-hover:scale-110 group-hover:bg-taxi group-hover:text-ink">
+                  {s.n}
+                </div>
+                <h3 className="mt-8 font-display text-2xl font-bold tracking-tight text-bone">
                   {s.t}
                 </h3>
-                <p className="mt-3 text-bone/60">{s.d}</p>
-                <div className="mt-6 mx-auto h-px w-0 bg-taxi transition-all duration-700 group-hover:w-full" />
+                <p className="mt-3 text-sm leading-relaxed text-bone/70 max-w-xs">
+                  {s.d}
+                </p>
+              </div>
+
+              <div className="mt-8 flex justify-center">
+                <div className="h-1 w-12 rounded-full bg-taxi/30 transition-all duration-500 group-hover:w-full group-hover:bg-taxi" />
               </div>
             </Reveal>
           ))}
