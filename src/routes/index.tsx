@@ -184,6 +184,29 @@ function Hero() {
     };
   };
 
+  const reverseGradientExitStyle = (progress: number) => {
+    // progress: 0.0 at top of page -> 1.0 when scrolled past intro phase
+    const v = 1 - progress;
+    const translateY = -progress * 70;
+    const scale = 1.0 - progress * 0.06;
+
+    // Reverse gradient fade: bottom dissolves to 0 opacity first, top stays visible longer (top 60% -> 0%)
+    const topOpacity = Math.min(v * 1.2, 1.0);
+    const bottomOpacity = Math.max(0, (v - 0.2) * 1.25);
+    const midOpacity = (topOpacity + bottomOpacity) / 2;
+
+    const maskImage = `linear-gradient(to bottom, rgba(0,0,0,${topOpacity.toFixed(2)}) 0%, rgba(0,0,0,${midOpacity.toFixed(2)}) 50%, rgba(0,0,0,${bottomOpacity.toFixed(2)}) 100%)`;
+
+    return {
+      opacity: Math.min(v * 1.5, 1.0),
+      transform: `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`,
+      WebkitMaskImage: maskImage,
+      maskImage: maskImage,
+      willChange: "opacity, transform, mask-image, -webkit-mask-image",
+      visibility: v <= 0.005 ? ("hidden" as const) : ("visible" as const),
+    };
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -193,15 +216,10 @@ function Hero() {
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden border-b border-border text-center">
         <div className="relative mx-auto flex h-full w-full max-w-[1400px] flex-col items-center justify-center px-6 text-center lg:px-10">
 
-          {/* 1. Initial Intro headline (Original Centered Style) */}
+          {/* 1. Initial Intro headline (Reverse gradient exit scroll animation) */}
           <div
             className="absolute inset-x-0 top-0 z-20 flex flex-col items-center justify-start pt-14 sm:pt-20 lg:pt-24 px-6 text-center pointer-events-none"
-            style={{
-              opacity: introFade,
-              transform: `translateY(${introY}px)`,
-              willChange: "opacity, transform",
-              visibility: introFade <= 0.01 ? "hidden" : "visible",
-            }}
+            style={reverseGradientExitStyle(introProgress)}
           >
             <div className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground text-center">
               — PILOTED
