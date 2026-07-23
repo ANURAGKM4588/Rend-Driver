@@ -160,13 +160,25 @@ function Hero() {
   // 4. Next scroll phase: Description text AND buttons appear together simultaneously (0.48 -> 0.72)
   const subAndCtaP = seg(0.48, 0.72);
 
-  const dropUpStyle = (v: number, startY = 70) => {
-    // Eased curve for smooth drop-up upward motion
-    const ease = v * (2 - v);
+  const gradientPopupStyle = (v: number, startY = 75) => {
+    // Eased curve for ultra-smooth spring text entry
+    const ease = 1 - Math.pow(1 - v, 3);
+    const translateY = (1 - ease) * startY;
+    const scale = 0.94 + ease * 0.06;
+
+    // Gradient opacity: Top portion starts at 60% opacity (0.6), bottom at 0 opacity (0), scaling smoothly to 100% (1.0)
+    const topOpacity = Math.min(0.6 + v * 0.4, 1.0);
+    const bottomOpacity = Math.min(v * 1.0, 1.0);
+    const midOpacity = (topOpacity + bottomOpacity) / 2;
+
+    const maskImage = `linear-gradient(to bottom, rgba(0,0,0,${topOpacity.toFixed(2)}) 0%, rgba(0,0,0,${midOpacity.toFixed(2)}) 50%, rgba(0,0,0,${bottomOpacity.toFixed(2)}) 100%)`;
+
     return {
-      opacity: v,
-      transform: `translate3d(0, ${(1 - ease) * startY}px, 0)`,
-      willChange: "opacity, transform",
+      opacity: Math.min(v * 1.4, 1),
+      transform: `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`,
+      WebkitMaskImage: maskImage,
+      maskImage: maskImage,
+      willChange: "opacity, transform, mask-image, -webkit-mask-image",
       visibility: v <= 0.005 ? ("hidden" as const) : ("visible" as const),
     };
   };
@@ -208,10 +220,10 @@ function Hero() {
             </h1>
           </div>
 
-          {/* 2. Hero revealed content (Drop-up style smooth scroll reveal) */}
+          {/* 2. Hero revealed content (Gradient fade & popup scroll reveal) */}
           <div className="relative z-0 mx-auto max-w-3xl text-center flex flex-col items-center justify-center">
             <div
-              style={dropUpStyle(titleP, 40)}
+              style={gradientPopupStyle(titleP, 40)}
               className="mb-6 inline-flex items-center justify-center gap-3 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground"
             >
               <span className="h-px w-8 bg-ink" />
@@ -220,7 +232,7 @@ function Hero() {
             </div>
 
             <h1
-              style={dropUpStyle(titleP, 85)}
+              style={gradientPopupStyle(titleP, 85)}
               className="font-display text-[14vw] leading-[0.85] font-extrabold tracking-tighter sm:text-[11vw] lg:text-[9vw] xl:text-[8rem] text-center"
             >
               Your car.
@@ -236,7 +248,7 @@ function Hero() {
             </h1>
 
             <p
-              style={dropUpStyle(subAndCtaP, 50)}
+              style={gradientPopupStyle(subAndCtaP, 50)}
               className="mx-auto mt-8 max-w-md text-base leading-relaxed text-muted-foreground text-center"
             >
               You already own the car you love. We bring the professional who
@@ -245,7 +257,7 @@ function Hero() {
             </p>
 
             <div
-              style={dropUpStyle(subAndCtaP, 40)}
+              style={gradientPopupStyle(subAndCtaP, 40)}
               className="mt-10 flex flex-wrap items-center justify-center gap-6"
             >
               <a
@@ -394,7 +406,7 @@ function Manifesto() {
             </Reveal>
             <Reveal
               as="h2"
-              variant="up"
+              variant="gradient"
               delay={120}
               className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl text-left"
             >
@@ -444,7 +456,7 @@ function How() {
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-taxi">
             — How it works
           </Reveal>
-          <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.95] lg:text-6xl text-center">
+          <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.95] lg:text-6xl text-center">
             Three taps.
             <br />
             One driver.
@@ -498,7 +510,7 @@ function Standards() {
               <span className="h-px w-6 bg-ink/40" />
               The Standard
             </Reveal>
-            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl text-left">
+            <Reveal as="h2" variant="gradient" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl text-left">
               A driver you'd hand your keys to<span className="text-taxi-deep">.</span>
             </Reveal>
             <Reveal as="p" variant="up" delay={220} className="mt-6 text-muted-foreground text-left text-base leading-relaxed max-w-sm">
@@ -565,7 +577,7 @@ function Insurance() {
               <span className="h-px w-6 bg-ink/40" />
               Commercial Protection
             </Reveal>
-            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-left">
+            <Reveal as="h2" variant="gradient" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-left">
               Comprehensive insurance. Every single mile<span className="text-taxi-deep">.</span>
             </Reveal>
             <Reveal as="p" variant="up" delay={220} className="mt-6 text-muted-foreground text-left text-base leading-relaxed max-w-md">
@@ -626,7 +638,7 @@ function ForWho() {
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
             — Who it's for
           </Reveal>
-          <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
+          <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
             Built for the people who'd rather{" "}
             <span className="italic font-normal text-muted-foreground">not</span>{" "}
             be driving
@@ -714,7 +726,7 @@ function Packages() {
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
             — Packages
           </Reveal>
-          <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
+          <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
             An hour. A day.
             <br />
             Or every day
@@ -815,7 +827,7 @@ function Cities() {
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-taxi">
             — Where we drive
           </Reveal>
-          <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-4xl font-bold leading-[0.95] lg:text-5xl text-center">
+          <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-4xl font-bold leading-[0.95] lg:text-5xl text-center">
             One country.
             <br />
             Every moment.
@@ -873,7 +885,7 @@ function DriverCareers({
             <Reveal variant="up" className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-taxi">
               — Join the Network
             </Reveal>
-            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-bone text-left">
+            <Reveal as="h2" variant="gradient" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-bone text-left">
               Drive with PILOTED<span className="text-taxi">.</span>
             </Reveal>
             <Reveal as="p" variant="up" delay={220} className="mt-6 text-bone/70 text-left text-base leading-relaxed max-w-md">
@@ -951,7 +963,7 @@ function Testimonials() {
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
             — People who let us drive
           </Reveal>
-          <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.95] lg:text-6xl text-center">
+          <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.95] lg:text-6xl text-center">
             Handed the keys.
             <br />
             Never looked back.
@@ -1015,7 +1027,7 @@ function FAQ() {
               <span className="h-px w-6 bg-ink/40" />
               Answered
             </Reveal>
-            <Reveal as="h2" variant="up" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-left">
+            <Reveal as="h2" variant="gradient" delay={120} className="mt-6 font-display text-4xl font-extrabold leading-[0.95] lg:text-6xl text-left">
               Everything you'd ask<span className="text-taxi-deep">.</span>
             </Reveal>
             <Reveal as="p" variant="up" delay={220} className="mt-6 text-muted-foreground text-left text-base leading-relaxed max-w-sm">
@@ -1060,7 +1072,7 @@ function AppCTA() {
         <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-ink/70">
           — Book only in the app
         </Reveal>
-        <Reveal as="h2" variant="up" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
+        <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
           Download. Tap. Drive.
         </Reveal>
         <Reveal as="p" variant="up" delay={260} className="mt-6 max-w-md text-ink/80 text-center">

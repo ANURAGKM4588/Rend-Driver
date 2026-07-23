@@ -1,6 +1,6 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
-type RevealVariant = "up" | "down" | "left" | "right" | "fade" | "clip";
+type RevealVariant = "up" | "down" | "left" | "right" | "fade" | "clip" | "gradient";
 
 interface RevealProps {
   children: ReactNode;
