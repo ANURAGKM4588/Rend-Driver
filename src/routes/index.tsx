@@ -274,7 +274,7 @@ function Hero() {
           >
             <div className="relative">
               <img
-                src="/car-black.png"
+                src="./car-black.png"
                 alt="PILOTED Black Luxury Sedan"
                 className="block w-full"
               />
