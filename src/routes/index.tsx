@@ -115,30 +115,58 @@ function Nav({ onOpenApply }: { onOpenApply: () => void }) {
 
 function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [p, setP] = useState(0); // 0..1 scroll progress through the hero
+  const [p, setP] = useState(0); // 0..1 smooth scroll progress through the hero
+  const targetPRef = useRef(0);
+  const currentPRef = useRef(0);
+  const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
+
+    const calculateTarget = () => {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const total = el.offsetHeight - vh;
       const scrolled = Math.min(Math.max(-rect.top, 0), total);
-      setP(total > 0 ? scrolled / total : 0);
+      return total > 0 ? scrolled / total : 0;
     };
+
+    const animate = () => {
+      const target = targetPRef.current;
+      const current = currentPRef.current;
+      const diff = target - current;
+
+      if (Math.abs(diff) > 0.0001) {
+        // 0.09 LERP factor provides silky physics momentum damping
+        const next = current + diff * 0.09;
+        currentPRef.current = next;
+        setP(next);
+        rafIdRef.current = requestAnimationFrame(animate);
+      } else {
+        currentPRef.current = target;
+        setP(target);
+        rafIdRef.current = null;
+      }
+    };
+
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
+      targetPRef.current = calculateTarget();
+      if (!rafIdRef.current) {
+        rafIdRef.current = requestAnimationFrame(animate);
+      }
     };
-    update();
+
+    targetPRef.current = calculateTarget();
+    currentPRef.current = targetPRef.current;
+    setP(targetPRef.current);
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
   }, []);
 
