@@ -952,7 +952,7 @@ function Packages() {
             >
               {/* Blurred Coming Soon Overlay for Out of State */}
               {p.isComingSoon && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-between p-6 bg-ink/70 backdrop-blur-[6px] text-center border border-taxi/40 rounded-3xl animate-in fade-in duration-300">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-between p-6 bg-ink/75 backdrop-blur-[6px] text-center border border-taxi/40 rounded-3xl animate-in fade-in duration-300">
                   <div className="flex items-center justify-between w-full">
                     <span className="font-display text-[10px] uppercase tracking-[0.25em] text-taxi font-bold">
                       {p.tag}
@@ -961,33 +961,24 @@ function Packages() {
                   </div>
 
                   <div className="my-auto flex flex-col items-center">
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-taxi/20 text-taxi font-display text-xl mb-3 shadow-inner">
+                    <span className="grid h-14 w-14 place-items-center rounded-2xl bg-taxi/20 text-taxi font-display text-2xl mb-4 shadow-inner">
                       🔒
                     </span>
-                    <span className="inline-block rounded-full bg-taxi px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-ink shadow-md mb-2">
+                    <span className="inline-block rounded-full bg-taxi px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-ink shadow-md mb-3">
                       Coming Soon
                     </span>
                     <h3 className="font-display text-2xl font-bold text-bone">
                       {p.name}
                     </h3>
-                    <p className="mt-2 text-xs text-bone/70 max-w-[200px] leading-relaxed">
+                    <p className="mt-2 text-xs text-bone/70 max-w-[210px] leading-relaxed">
                       Highway & Intercity driver dispatches launching soon.
                     </p>
                   </div>
 
-                  <div className="w-full space-y-2 pt-2">
-                    <button
-                      onClick={handleExplore}
-                      className="w-full py-2.5 rounded-full bg-taxi text-ink font-bold text-xs uppercase tracking-wider hover:bg-white transition-colors cursor-pointer shadow-lg"
-                    >
-                      Explore
-                    </button>
-                    <button
-                      onClick={() => handleOpenDetails(p)}
-                      className="w-full py-2.5 rounded-full border border-bone/30 text-bone text-xs font-semibold uppercase tracking-wider hover:bg-bone/10 transition-colors cursor-pointer"
-                    >
-                      View More
-                    </button>
+                  <div className="w-full text-center pb-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-taxi/70">
+                      Unlocking Soon
+                    </span>
                   </div>
                 </div>
               )}
