@@ -34,6 +34,15 @@ function Index() {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isApplyOpen, setIsApplyOpen] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav onOpenApply={() => setIsApplyOpen(true)} />
