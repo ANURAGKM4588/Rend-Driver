@@ -7,6 +7,7 @@ import bannerDriver from "@/assets/banner-driver.jpg";
 import carBlack from "@/assets/car-black.png";
 import { DriverTermsModal } from "@/components/DriverTermsModal";
 import { DriverApplicationModal } from "@/components/DriverApplicationModal";
+import { ServiceDetailsModal, type ServicePackageDetails } from "@/components/ServiceDetailsModal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -785,101 +786,276 @@ function ForWho() {
 }
 
 function Packages() {
-  const plans = [
+  const [activeModalPackage, setActiveModalPackage] = useState<ServicePackageDetails | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenDetails = (pkg: ServicePackageDetails) => {
+    setActiveModalPackage(pkg);
+    setIsModalOpen(true);
+  };
+
+  const handleExplore = () => {
+    const el = document.getElementById("app");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const plans: ServicePackageDetails[] = [
     {
-      name: "By the hour",
-      tag: "One-off",
-      lead: "A driver for a school run, an errand, a night out.",
-      unit: "/ hour",
-      bullets: ["2 hour minimum", "On-demand dispatch", "Same-city trips"],
+      id: "hourly",
+      name: "Hourly",
+      tag: "Flex & Short Trips",
+      lead: "A vetted driver on-demand for errands, dinner dates, doctor visits, or school runs.",
+      unit: "Quoted in-app / Hour",
+      bullets: ["2-Hour Minimum", "Instant On-Demand Dispatch", "Same-City Coverage"],
       tone: "bone",
+      fullDetails: {
+        description:
+          "Perfect for flexible day-to-day driving needs. You keep your car in your driveway while a uniformed PILOTED driver arrives at your location to handle city traffic, parking hassle, and navigation.",
+        whatsIncluded: [
+          "Vetted & Uniformed Professional Driver",
+          "Commercial Supplemental Liability Insurance",
+          "Real-Time In-App Driver Tracking",
+          "Waiting & Multi-Stop Assistance",
+        ],
+        packageSpecs: [
+          { label: "Minimum Duration", value: "2 Hours" },
+          { label: "Billing Unit", value: "Hourly Pro-rata" },
+          { label: "Notice Period", value: "30 Mins Lead Time" },
+        ],
+        termsAndConditions: [
+          "Fuel, tolls, and parking passes are borne by the vehicle owner.",
+          "Vehicle must have valid registration and basic vehicle insurance.",
+          "Cancellations are free up to 15 minutes before driver arrival.",
+        ],
+      },
     },
     {
-      name: "Half day",
-      tag: "Most booked",
-      lead: "Four hours of a dedicated driver for events, weddings, city days.",
-      unit: "/ 4 hrs",
-      bullets: ["Waiting time included", "Fuel not included", "Formal uniform"],
+      id: "full-day",
+      name: "Full day",
+      tag: "Most Popular",
+      lead: "8 to 12 hours of a dedicated driver for business, weddings, family events, or city days.",
+      unit: "Quoted in-app / 8-12 Hrs",
+      bullets: ["Dedicated All-Day Driver", "Unlimited City Stops", "Zero Waiting Charges"],
       tone: "taxi",
+      fullDetails: {
+        description:
+          "Our signature full-day chauffeur service. Have a dedicated professional driver at your beck and call all day for back-to-back corporate meetings, shopping sprees, family events, or city tours.",
+        whatsIncluded: [
+          "Dedicated Senior Executive Driver",
+          "Unlimited Multi-Stop City Driving",
+          "Zero Extra Waiting Time Fees",
+          "Formal Uniform & Door Assistance",
+        ],
+        packageSpecs: [
+          { label: "Standard Shift", value: "8 to 12 Hours" },
+          { label: "Coverage Area", value: "Full Metropolitan Area" },
+          { label: "Overtime Rate", value: "Flat In-App Add-on" },
+        ],
+        termsAndConditions: [
+          "Driver meal break of 30 minutes recommended during 8+ hour shifts.",
+          "Parking and state entry permits (if applicable) paid by vehicle owner.",
+          "Overtime after standard shift hours calculated automatically in app.",
+        ],
+      },
     },
     {
-      name: "Monthly driver",
-      tag: "Retainer",
-      lead: "A dedicated driver assigned to you and your car, on a monthly plan.",
-      unit: "/ month",
-      bullets: ["Fixed driver, fixed hours", "Priority dispatch", "Personal briefing"],
+      id: "airport",
+      name: "Airport and Other Trips",
+      tag: "Point-to-Point",
+      lead: "Seamless stress-free airport drop-offs, pickups, corporate transfers, and event shuttles.",
+      unit: "Quoted in-app / Trip",
+      bullets: ["Flight Status Tracking", "Luggage & Door Assistance", "24/7 Red-Eye Dispatch"],
       tone: "ink",
+      fullDetails: {
+        description:
+          "Never worry about airport parking fees or early morning flight fatigue. Our driver arrives at your home, loads your luggage, drives you safely to the departure terminal, and parks your car back in your garage.",
+        whatsIncluded: [
+          "Real-Time Flight Status Monitoring",
+          "Luggage Handling & Terminal Drop-off",
+          "Return Pickup & Home Garage Parking",
+          "24/7 Red-Eye Flight Dispatch",
+        ],
+        packageSpecs: [
+          { label: "Service Type", value: "Point-to-Point Transfer" },
+          { label: "Flight Delay Buffer", value: "60 Mins Free Wait" },
+          { label: "Vehicle Return", value: "Safe Home Garage Drop" },
+        ],
+        termsAndConditions: [
+          "Flight number required during booking for real-time delay tracking.",
+          "Toll plaza fees and airport parking passes added to final invoice.",
+          "Driver will wait up to 60 minutes post flight landing at no extra fee.",
+        ],
+      },
+    },
+    {
+      id: "out-of-state",
+      name: "Out of State",
+      tag: "Intercity & Highway",
+      lead: "Long-distance highway driving across state borders for weekend getaways and intercity travel.",
+      unit: "Unlocking Soon",
+      bullets: ["Highway Certified Driver", "Overnight Stays Allowed", "Multi-State Permits"],
+      tone: "dark",
+      isComingSoon: true,
+      fullDetails: {
+        description:
+          "Intercity out-of-state highway driving service is currently in final licensing and compliance preparation. Soon you will be able to book highway-certified drivers for interstate road trips!",
+        whatsIncluded: [
+          "Certified Highway Defensive Driver",
+          "Interstate Route Planning",
+          "Overnight Stay Accommodations",
+        ],
+        packageSpecs: [
+          { label: "Status", value: "Coming Soon" },
+          { label: "Target Launch", value: "Q4 2026" },
+        ],
+        termsAndConditions: [
+          "Sign up in the PILOTED mobile app to get notified when Out of State trips launch!",
+        ],
+      },
     },
   ];
 
   const toneClass = (t: string) =>
     t === "ink"
-      ? "bg-ink text-bone"
+      ? "bg-ink text-bone border border-border/40"
       : t === "taxi"
-        ? "bg-taxi text-ink"
-        : "bg-background text-ink border border-border";
+        ? "bg-taxi text-ink border border-taxi"
+        : t === "dark"
+          ? "bg-ink/95 text-bone border border-bone/20"
+          : "bg-card text-foreground border border-border";
 
   return (
-    <section id="packages" className="border-b border-border">
+    <section id="packages" className="border-b border-border bg-background">
       <div className="mx-auto max-w-[1400px] px-6 py-24 lg:px-10 lg:py-32">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
-            — Packages
+            — Service Packages
           </Reveal>
           <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
-            An hour. A day.
-            <br />
-            Or every day
+            Driven for every trip
             <span className="text-taxi-deep">.</span>
           </Reveal>
           <Reveal as="p" variant="up" delay={240} className="mx-auto mt-6 max-w-md text-muted-foreground text-center">
-            Rates and quotes finalise inside the app — this is the shape of it.
+            Rates and quotes finalise inside the app — select your trip type below.
           </Reveal>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {plans.map((p, i) => (
             <Reveal
-              key={p.name}
+              key={p.id}
               variant="up"
               delay={i * 140}
-              className={`tile-hover group relative flex flex-col justify-between overflow-hidden rounded-3xl p-8 lg:p-10 text-center ${toneClass(p.tone)}`}
+              className={`tile-hover group relative flex flex-col justify-between overflow-hidden rounded-3xl p-7 lg:p-8 text-center ${toneClass(p.tone)}`}
             >
+              {/* Blurred Coming Soon Overlay for Out of State */}
+              {p.isComingSoon && (
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-between p-6 bg-ink/70 backdrop-blur-[6px] text-center border border-taxi/40 rounded-3xl animate-in fade-in duration-300">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-display text-[10px] uppercase tracking-[0.25em] text-taxi font-bold">
+                      {p.tag}
+                    </span>
+                    <span className="font-display text-xs text-taxi/60">/ 0{i + 1}</span>
+                  </div>
+
+                  <div className="my-auto flex flex-col items-center">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-taxi/20 text-taxi font-display text-xl mb-3 shadow-inner">
+                      🔒
+                    </span>
+                    <span className="inline-block rounded-full bg-taxi px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-ink shadow-md mb-2">
+                      Coming Soon
+                    </span>
+                    <h3 className="font-display text-2xl font-bold text-bone">
+                      {p.name}
+                    </h3>
+                    <p className="mt-2 text-xs text-bone/70 max-w-[200px] leading-relaxed">
+                      Highway & Intercity driver dispatches launching soon.
+                    </p>
+                  </div>
+
+                  <div className="w-full space-y-2 pt-2">
+                    <button
+                      onClick={handleExplore}
+                      className="w-full py-2.5 rounded-full bg-taxi text-ink font-bold text-xs uppercase tracking-wider hover:bg-white transition-colors cursor-pointer shadow-lg"
+                    >
+                      Explore
+                    </button>
+                    <button
+                      onClick={() => handleOpenDetails(p)}
+                      className="w-full py-2.5 rounded-full border border-bone/30 text-bone text-xs font-semibold uppercase tracking-wider hover:bg-bone/10 transition-colors cursor-pointer"
+                    >
+                      View More
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Standard Card Content */}
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="font-display text-xs uppercase tracking-[0.3em] opacity-60">
+                  <span className="font-display text-[10px] uppercase tracking-[0.25em] opacity-60">
                     {p.tag}
                   </span>
                   <span className="font-display text-xs opacity-40">/ 0{i + 1}</span>
                 </div>
-                <h3 className="mt-10 font-display text-4xl font-bold leading-[1.05] tracking-tight lg:text-5xl text-center">
+                <h3 className="mt-6 font-display text-3xl font-bold leading-tight tracking-tight text-center">
                   {p.name}
                 </h3>
-                <p className="mt-4 max-w-sm mx-auto text-sm opacity-70 text-center">{p.lead}</p>
+                <p className="mt-3 text-xs leading-relaxed opacity-75 text-center min-h-[48px]">
+                  {p.lead}
+                </p>
               </div>
 
-              <div className="mt-10 border-t border-current/15 pt-6 flex flex-col items-center text-center">
-                <ul className="space-y-2 text-sm opacity-80 inline-block text-left">
+              <div className="mt-6 border-t border-current/15 pt-5 flex flex-col items-center text-center">
+                <ul className="space-y-2 text-xs opacity-85 text-left w-full pl-2 mb-6">
                   {p.bullets.map((b) => (
-                    <li key={b} className="flex items-center gap-3">
-                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                      {b}
+                    <li key={b} className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-current shrink-0" />
+                      <span>{b}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 flex flex-col items-center gap-1">
-                  <span className="font-display text-2xl font-semibold tracking-tight">
-                    From
-                  </span>
+
+                <div className="mb-6 flex flex-col items-center gap-0.5">
                   <span className="font-display text-xs uppercase tracking-widest opacity-60">
-                    Quoted in-app {p.unit}
+                    {p.unit}
                   </span>
+                </div>
+
+                {/* Two Action Buttons: Explore & View More */}
+                <div className="w-full space-y-2">
+                  <button
+                    onClick={handleExplore}
+                    className={`w-full py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+                      p.tone === "taxi"
+                        ? "bg-ink text-taxi hover:bg-background hover:text-ink shadow-md"
+                        : "bg-taxi text-ink hover:bg-ink hover:text-taxi shadow-md"
+                    }`}
+                  >
+                    Explore
+                  </button>
+                  <button
+                    onClick={() => handleOpenDetails(p)}
+                    className="w-full py-2.5 rounded-full border border-current/25 text-xs font-semibold uppercase tracking-wider hover:bg-current/10 transition-colors cursor-pointer"
+                  >
+                    View More
+                  </button>
                 </div>
               </div>
             </Reveal>
           ))}
         </div>
       </div>
+
+      {/* Package View More Full Details Modal */}
+      <ServiceDetailsModal
+        packageData={activeModalPackage}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onExplore={handleExplore}
+      />
     </section>
   );
 }
