@@ -39,7 +39,22 @@ function Index() {
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
       }
+
+      // Reset URL hash on refresh if present
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+
+      // Scroll window to top (Hero section) immediately
       window.scrollTo(0, 0);
+
+      const onBeforeUnload = () => {
+        window.scrollTo(0, 0);
+      };
+      window.addEventListener("beforeunload", onBeforeUnload);
+      return () => {
+        window.removeEventListener("beforeunload", onBeforeUnload);
+      };
     }
   }, []);
 
