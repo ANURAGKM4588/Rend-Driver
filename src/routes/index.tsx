@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { ScrollCinematic } from "@/components/ScrollCinematic";
 import bannerDriver from "@/assets/banner-driver.jpg";
+import carBlack from "@/assets/car-black.png";
 import { DriverTermsModal } from "@/components/DriverTermsModal";
 import { DriverApplicationModal } from "@/components/DriverApplicationModal";
 
@@ -286,7 +287,7 @@ function Hero() {
           >
             <div className="relative">
               <img
-                src="./car-black.png"
+                src={carBlack}
                 alt="PILOTED Black Luxury Sedan"
                 className="block w-full"
               />
