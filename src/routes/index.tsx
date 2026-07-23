@@ -283,23 +283,21 @@ function Hero() {
 
           {/* 1. Initial Intro headline (Reverse gradient exit scroll animation) */}
           <div
-            className="absolute inset-x-0 top-0 z-20 flex flex-col items-center justify-start pt-14 sm:pt-20 lg:pt-24 px-6 text-center pointer-events-none"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center sm:justify-start pt-6 sm:pt-20 lg:pt-24 px-4 sm:px-6 text-center pointer-events-none w-full mx-auto"
             style={reverseGradientExitStyle(introProgress)}
           >
-            <div className="mb-4 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground text-center">
+            <div className="mb-3 sm:mb-4 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground text-center w-full">
               — PILOTED
             </div>
 
-            <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl text-center">
-              Who drives
-              <br />
-              <span className="italic font-normal text-muted-foreground">
+            <h1 className="font-display text-4xl sm:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight text-center w-full mx-auto">
+              <span className="block text-center w-full">Who drives</span>
+              <span className="block italic font-normal text-muted-foreground text-center w-full my-1 sm:my-0">
                 your car
               </span>
-              <br />
-              <span className="relative inline-block">
+              <span className="relative inline-block text-center mx-auto">
                 when you can't?
-                <span className="absolute -bottom-1.5 left-0 h-3.5 w-full rounded-full bg-taxi -z-10" />
+                <span className="absolute -bottom-1 left-0 h-3 w-full rounded-full bg-taxi -z-10" />
               </span>
             </h1>
           </div>
