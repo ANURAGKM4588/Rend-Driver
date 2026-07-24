@@ -134,7 +134,8 @@ function Nav({ onOpenApply }: { onOpenApply: () => void }) {
           </button>
           <a
             href="#app"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-4 py-2 text-xs font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5"
+            onClick={scrollTo("app")}
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-4 py-2 text-xs font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5 cursor-pointer"
           >
             Get the app
             <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
@@ -148,9 +149,16 @@ function Nav({ onOpenApply }: { onOpenApply: () => void }) {
 function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [p, setP] = useState(0); // 0..1 smooth scroll progress through the hero
+  const [mounted, setMounted] = useState(false);
   const targetPRef = useRef(0);
   const currentPRef = useRef(0);
   const rafIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Trigger page-reload entrance animation
+    const t = setTimeout(() => setMounted(true), 60);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -207,8 +215,6 @@ function Hero() {
 
   // 1. Initial 'Who drives your car when you can't?' headline fades out first (0.0 -> 0.20)
   const introProgress = seg(0.0, 0.20);
-  const introFade = 1 - introProgress;
-  const introY = -introProgress * 60;
 
   // 2. Car drives across (0.0 -> 0.85)
   const carP = seg(0.0, 0.85);
@@ -276,23 +282,45 @@ function Hero() {
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden border-b border-border text-center">
         <div className="relative mx-auto flex h-full w-full max-w-[1400px] flex-col items-center justify-center px-6 text-center lg:px-10">
 
-          {/* 1. Initial Intro headline (Reverse gradient exit scroll animation) */}
+          {/* 1. Initial Intro headline (Original Typography + Page-Reload Entrance Animation) */}
           <div
             className="absolute inset-0 z-20 flex flex-col items-center justify-center sm:justify-start pt-6 sm:pt-20 lg:pt-24 px-4 sm:px-6 text-center pointer-events-none w-full mx-auto"
             style={reverseGradientExitStyle(introProgress)}
           >
-            <div className="mb-3 sm:mb-4 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground text-center w-full">
+            <div
+              className={`mb-3 sm:mb-4 text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground text-center w-full transition-all duration-700 delay-100 transform ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+              }`}
+            >
               — PILOTED
             </div>
 
             <h1 className="font-display text-4xl sm:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight text-center w-full mx-auto">
-              <span className="block text-center w-full">Who drives</span>
-              <span className="block italic font-normal text-muted-foreground text-center w-full my-1 sm:my-0">
+              <span
+                className={`block text-center w-full transition-all duration-700 delay-200 transform ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
+              >
+                Who drives
+              </span>
+              <span
+                className={`block italic font-normal text-muted-foreground text-center w-full my-1 sm:my-0 transition-all duration-700 delay-350 transform ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
+              >
                 your car
               </span>
-              <span className="relative inline-block text-center mx-auto">
+              <span
+                className={`relative inline-block text-center mx-auto transition-all duration-700 delay-500 transform ${
+                  mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
+              >
                 when you can't?
-                <span className="absolute -bottom-1 left-0 h-3 w-full rounded-full bg-taxi -z-10" />
+                <span
+                  className={`absolute -bottom-1 left-0 h-3 rounded-full bg-taxi -z-10 transition-all duration-1000 delay-700 ease-out origin-left ${
+                    mounted ? "w-full scale-x-100 opacity-100" : "w-0 scale-x-0 opacity-0"
+                  }`}
+                />
               </span>
             </h1>
           </div>
@@ -339,14 +367,22 @@ function Hero() {
             >
               <a
                 href="#app"
-                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-ink px-6 py-4 text-sm font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("app")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-ink px-6 py-4 text-sm font-semibold uppercase tracking-widest text-taxi transition-transform hover:-translate-y-0.5 cursor-pointer"
               >
                 Book on the app
                 <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
               </a>
               <a
                 href="#story"
-                className="text-sm font-medium underline decoration-taxi decoration-4 underline-offset-8"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("story")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="text-sm font-medium underline decoration-taxi decoration-4 underline-offset-8 cursor-pointer"
               >
                 Read the story
               </a>
@@ -383,22 +419,44 @@ function Hero() {
                     willChange: "transform",
                   }}
                 >
-                  <svg viewBox="0 0 100 100" className="h-full w-full">
-                    <circle cx="50" cy="50" r="46" fill="none" stroke="#111" strokeWidth="3" />
-                    <circle cx="50" cy="50" r="14" fill="#111" />
-                    {Array.from({ length: 6 }).map((_, k) => (
-                      <line
-                        key={k}
-                        x1="50"
-                        y1="50"
-                        x2="50"
-                        y2="8"
-                        stroke="#111"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        transform={`rotate(${k * 60} 50 50)`}
-                      />
-                    ))}
+                  <svg viewBox="0 0 100 100" className="h-full w-full drop-shadow-md">
+                    <defs>
+                      <linearGradient id="ySpokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#222228" />
+                        <stop offset="50%" stopColor="#141418" />
+                        <stop offset="100%" stopColor="#08080a" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Rubber Tire Ring (100% Transparent Center) */}
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0d" strokeWidth="4" />
+                    <circle cx="50" cy="50" r="45.5" fill="none" stroke="#222228" strokeWidth="1.2" />
+
+                    {/* Yellow Performance Brake Caliper Accent */}
+                    <path d="M 20 44 A 32 32 0 0 1 36 20 L 41 26 A 25 25 0 0 0 27 46 Z" fill="#f5c518" opacity="0.9" />
+
+                    {/* Polished Metallic Outer Rim Lip */}
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="#444" strokeWidth="1.5" />
+
+                    {/* 10-Y-Spoke Forged Mesh Geometry (Transparent Gaps Between Spokes) */}
+                    {Array.from({ length: 10 }).map((_, k) => {
+                      const angle = k * 36;
+                      return (
+                        <g key={k} transform={`rotate(${angle} 50 50)`}>
+                          {/* Y-Spoke Base to Branch */}
+                          <path d="M 48.5 40 L 46 22 L 39 9 L 43 9 L 48 20 L 50 40 Z" fill="url(#ySpokeGrad)" stroke="#000" strokeWidth="0.5" />
+                          <path d="M 51.5 40 L 54 22 L 61 9 L 57 9 L 52 20 L 50 40 Z" fill="url(#ySpokeGrad)" stroke="#000" strokeWidth="0.5" />
+                          {/* CNC Machined Edge Highlights */}
+                          <line x1="48" y1="20" x2="41" y2="9" stroke="#666" strokeWidth="0.75" />
+                          <line x1="52" y1="20" x2="59" y2="9" stroke="#666" strokeWidth="0.75" />
+                        </g>
+                      );
+                    })}
+
+                    {/* Center Lock Hub & Cap */}
+                    <circle cx="50" cy="50" r="11" fill="#0d0e12" stroke="#f5c518" strokeWidth="1.5" />
+                    <circle cx="50" cy="50" r="5.5" fill="#f5c518" />
+                    <circle cx="50" cy="50" r="2" fill="#141414" />
                   </svg>
                 </div>
               ))}
@@ -1326,44 +1384,168 @@ function FAQ() {
 
 function AppCTA() {
   return (
-    <section id="app" className="relative overflow-hidden border-b border-border bg-taxi text-ink">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07] checker-stripe" />
-      <div className="relative mx-auto flex max-w-[1400px] flex-col items-center justify-center text-center px-6 py-24 lg:px-10 lg:py-32">
-        <Reveal variant="up" className="text-xs font-medium uppercase tracking-[0.25em] text-ink/70">
-          — Book only in the app
-        </Reveal>
-        <Reveal as="h2" variant="gradient" delay={120} className="mt-4 font-display text-5xl font-bold leading-[0.9] lg:text-7xl text-center">
-          Download. Tap. Drive.
-        </Reveal>
-        <Reveal as="p" variant="up" delay={260} className="mt-6 max-w-md text-ink/80 text-center">
-          The website tells the story. The app does the work. Bookings,
-          dispatch and driver tracking live entirely in the PILOTED app.
-        </Reveal>
+    <section id="app" className="relative overflow-hidden border-b border-border bg-taxi text-ink py-20 lg:py-28">
+      {/* Subtle Watermark */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04] checker-stripe" />
+      
+      {/* Vignette depth gradient */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_rgba(0,0,0,0.1)_100%)]" />
 
-        <Reveal variant="up" delay={340} className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <StoreButton store="App Store" sub="Download on the" />
-          <StoreButton store="Google Play" sub="Get it on" />
-        </Reveal>
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Left Column: 3D Perspective Smartphones (Opposite Side 3D Angle) */}
+          <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-start pt-6 lg:pt-0" style={{ perspective: '1200px' }}>
+            
+            {/* Phone 1 (Back Left Smartphone - Opposite 3D Side View) */}
+            <Reveal variant="left" className="relative z-10 w-[205px] sm:w-[235px] shrink-0" style={{ transformStyle: 'preserve-3d', transform: 'perspective(1000px) rotateY(24deg) rotateX(10deg) rotateZ(-3deg)', filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.15))' }}>
+              {/* White 3D Case Frame with Side Bevel & Volume Buttons */}
+              <div className="relative rounded-[40px] border-[5px] border-white bg-white p-2 shadow-none text-left">
+                {/* Right Side Volume Buttons Graphic */}
+                <div className="absolute -right-[8px] top-16 w-[4px] h-7 bg-neutral-300 rounded-r-sm" />
+                <div className="absolute -right-[8px] top-26 w-[4px] h-7 bg-neutral-300 rounded-r-sm" />
+
+                {/* Smartphone Screen Content */}
+                <div className="rounded-[32px] bg-[#0e0e12] p-4 text-bone space-y-3 font-sans h-[360px] sm:h-[390px] flex flex-col justify-between">
+                  {/* Status Bar */}
+                  <div className="flex justify-between items-center text-[9px] text-bone/60 font-semibold px-1">
+                    <span>••• BELL</span>
+                    <span>4:21 PM</span>
+                  </div>
+
+                  <div className="space-y-2.5 my-auto">
+                    <div className="flex gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-taxi" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-bone/30" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-bone/30" />
+                    </div>
+                    <h4 className="font-display text-lg sm:text-xl font-black text-white leading-tight uppercase tracking-tight">
+                      YOUR CAR. <br />
+                      <span className="text-taxi">OUR DRIVER.</span>
+                    </h4>
+                    <p className="text-[10px] text-bone/70 leading-relaxed">
+                      Executive chauffeurs at your service 24/7.
+                    </p>
+                  </div>
+
+                  <div className="w-full py-2.5 rounded-full bg-taxi text-ink font-extrabold text-[10px] uppercase tracking-wider text-center shadow-md">
+                    EXPLORE APP →
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Phone 2 (Front Right Smartphone - Opposite 3D Side View) */}
+            <Reveal variant="right" delay={150} className="relative z-20 -ml-12 sm:-ml-16 w-[220px] sm:w-[250px] shrink-0" style={{ transformStyle: 'preserve-3d', transform: 'perspective(1000px) rotateY(24deg) rotateX(10deg) rotateZ(-3deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.2))' }}>
+              {/* White 3D Case Frame with Side Bevel & Volume Buttons */}
+              <div className="relative rounded-[44px] border-[5px] border-white bg-white p-2 shadow-none text-left">
+                {/* Right Side Volume Buttons Graphic */}
+                <div className="absolute -right-[8px] top-18 w-[4px] h-8 bg-neutral-300 rounded-r-sm" />
+                <div className="absolute -right-[8px] top-30 w-[4px] h-8 bg-neutral-300 rounded-r-sm" />
+
+                {/* Smartphone Screen Content */}
+                <div className="rounded-[36px] bg-[#0e0e12] p-4 text-bone space-y-3 font-sans h-[380px] sm:h-[410px] flex flex-col justify-between">
+                  {/* Status Bar */}
+                  <div className="flex justify-between items-center text-[9px] text-bone/60 font-semibold px-1">
+                    <span>••• BELL</span>
+                    <span>4:21 PM</span>
+                    <span>100% 🔋</span>
+                  </div>
+
+                  {/* App Logo Branding */}
+                  <div className="text-center pt-2 space-y-1">
+                    <div className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-taxi text-ink font-display font-black text-2xl shadow-md mx-auto">
+                      P
+                    </div>
+                    <h3 className="font-display text-2xl font-black text-white tracking-widest uppercase">PILOTED</h3>
+                  </div>
+
+                  {/* Clean Input Fields */}
+                  <div className="space-y-2 px-1">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 text-[11px] text-bone/70">
+                      <span>👤</span> username
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 text-[11px] text-bone/70">
+                      <span>🔒</span> password
+                    </div>
+                  </div>
+
+                  <div className="w-full py-2.5 rounded-full bg-taxi text-ink font-extrabold text-[10px] uppercase tracking-wider text-center shadow-lg">
+                    SIGN IN / DISPATCH DRIVER
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Right Column: Title, Description & White Side-by-Side Store Pills (matching reference image) */}
+          <div className="lg:col-span-6 text-left space-y-6 z-10">
+            <Reveal variant="up" className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ink/10 border border-ink/20 text-ink text-xs font-extrabold uppercase tracking-[0.2em]">
+              <span className="w-2 h-2 rounded-full bg-ink animate-ping" />
+              BOOK ONLY IN THE APP
+            </Reveal>
+
+            <Reveal as="h2" variant="gradient" delay={100} className="font-display text-5xl sm:text-7xl lg:text-8xl font-black text-ink tracking-tight leading-[0.95]">
+              Download. <br />
+              <span className="underline decoration-ink/20">Tap. Drive.</span>
+            </Reveal>
+
+            <Reveal as="p" variant="up" delay={200} className="text-ink/85 text-base sm:text-lg leading-relaxed font-medium max-w-lg">
+              Make your chauffeur experience easier and faster. Bookings, live driver tracking, and dispatch live entirely inside the PILOTED app.
+            </Reveal>
+
+            {/* Side-by-Side White Pill Store Buttons */}
+            <Reveal variant="up" delay={300} className="pt-2 flex flex-wrap gap-4 items-center">
+              <WhiteStorePill store="App Store" sub="Download on the" isApple />
+              <WhiteStorePill store="Google Play" sub="GET IT ON" isGoogle />
+            </Reveal>
+          </div>
+
+        </div>
       </div>
     </section>
   );
 }
 
-function StoreButton({ store, sub }: { store: string; sub: string }) {
+function WhiteStorePill({
+  store,
+  sub,
+  isApple,
+  isGoogle,
+}: {
+  store: string;
+  sub: string;
+  isApple?: boolean;
+  isGoogle?: boolean;
+}) {
   return (
     <a
-      href="#"
-      className="group flex min-w-[220px] items-center justify-center gap-4 rounded-2xl bg-ink px-6 py-5 text-taxi transition-transform hover:-translate-y-1"
+      href="#app"
+      onClick={(e) => {
+        e.preventDefault();
+        alert("PILOTED mobile app is available on the iOS App Store & Google Play Store.");
+      }}
+      className="group flex min-w-[195px] items-center justify-center gap-3.5 rounded-2xl bg-white hover:bg-ink text-ink hover:text-taxi px-6 py-4 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-2xl cursor-pointer border border-ink/10"
     >
-      <span className="grid h-10 w-10 place-items-center rounded-full border border-taxi/40 font-display text-lg font-bold">
-        ▶
-      </span>
-      <span className="flex flex-col text-left leading-tight">
-        <span className="text-[10px] uppercase tracking-widest text-taxi/60">
+      <div className="shrink-0 text-current">
+        {isApple ? (
+          <svg className="w-6 h-6 fill-current text-ink group-hover:text-taxi transition-colors" viewBox="0 0 384 512">
+            <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 63.9 24.1 113.8c18.5 37.9 44.5 76.5 81.3 75.8 34.6-.7 47.9-22.3 89.2-22.3 40.5 0 52.8 22.3 89.2 21.6 37.6-.7 62.9-34.9 81-73.4 12-25.2 20.6-54 20.7-54.8-1.5-1-66.5-25.9-66.8-65.5zM260.6 86.8c15.7-19.1 27.5-45.9 24.3-73.1-23.7 1-52.1 15.9-68.4 35-14.7 17.1-27.4 44.3-23.9 70.8 26.4 2 52.8-13.6 68-32.7z" />
+          </svg>
+        ) : isGoogle ? (
+          <svg className="w-5 h-5 fill-current text-ink group-hover:text-taxi transition-colors" viewBox="0 0 512 512">
+            <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
+          </svg>
+        ) : (
+          "▶"
+        )}
+      </div>
+      <div className="flex flex-col text-left leading-tight">
+        <span className="text-[9px] font-bold uppercase tracking-widest text-ink/60 group-hover:text-taxi/70 transition-colors">
           {sub}
         </span>
-        <span className="font-display text-lg font-semibold">{store}</span>
-      </span>
+        <span className="font-display text-base font-extrabold text-ink group-hover:text-white transition-colors">{store}</span>
+      </div>
     </a>
   );
 }
